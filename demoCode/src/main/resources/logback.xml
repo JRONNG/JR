@@ -1,0 +1,74 @@
+
+<configuration>
+    <!-- 定义日志文件 输入位置 -->
+    <property name="log.filePath" value="E:/Logger/gitDemo"/>
+    <property name="log.projectName" value="demoCode"/>
+
+    <!--控制台的输出-->
+    <!-- %m输出的信息,%p日志级别,%t线程名,%d日期,%c类的全名,,,, -->
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+<!--            <Pattern>[%d{yyyy-MM-dd HH:mm:ss.SSS}] - %-5p - [%c]:%L.%method:%L - %msg%n</Pattern>-->
+            <pattern>%d %p (%file:%line\)- %m%n</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <!--日志文件的输出-->
+    <appender name="baselog"  class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <File>${log.filePath}/${log.projectName}.log</File>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${log.filePath}/${log.projectName}.log.%d.%i</fileNamePattern>
+            <timeBasedFileNamingAndTriggeringPolicy  class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <!-- or whenever the file size reaches 64 MB -->
+                <maxFileSize>64 MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+        <!--输出的格式-->
+        <encoder>
+            <pattern>
+                %d %p (%file:%line\)- %m%n
+            </pattern>
+            <charset>UTF-8</charset> <!-- 此处设置字符集 -->
+        </encoder>
+    </appender>
+
+
+    <!--日志文件的输出，只输出Error级别的日志信息-->
+    <appender name="errorAppender"  class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${log.filePath}/${log.projectName}.log.error.%d.%i</fileNamePattern>
+            <timeBasedFileNamingAndTriggeringPolicy  class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <!-- or whenever the file size reaches 64 MB -->
+                <maxFileSize>64 MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+        <encoder>
+            <pattern>
+                %d %p (%file:%line\)- %m%n
+            </pattern>
+            <charset>UTF-8</charset> <!-- 此处设置字符集 -->
+        </encoder>
+        <!-- 过滤器，只记录对应级别的日志 -->
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>ERROR</level>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+    </appender>
+
+    <!--用来设置打印级别-->
+    <root level="info" additivity="true">
+        <appender-ref ref="STDOUT" />
+    </root>
+    <!--用来设置某个包的打印级别-->
+    <logger name="com.jr" level="DEBUG" additivity="true">
+        <appender-ref ref="baselog" />
+        <appender-ref ref="errorAppender" />
+    </logger>
+    <!--用来设置某个包的打印级别-->
+    <logger name="org" level="ERROR" additivity="true">
+        <appender-ref ref="baselog" />
+        <appender-ref ref="errorAppender" />
+    </logger>
+
+</configuration>

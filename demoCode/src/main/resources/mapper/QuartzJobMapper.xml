@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jr.gitdemo.dao.QuartzJobMapper" >
+    <resultMap id="BaseResultMap" type="com.jr.gitdemo.entity.TaskInfo" >
+        <id column="JOB_NAME" property="jobName" jdbcType="VARCHAR" />
+        <id column="JOB_GROUP" property="jobGroup" jdbcType="VARCHAR" />
+        <id column="CRON_EXPRESSION" property="cronExpression" jdbcType="VARCHAR" />
+        <id column="DESCRIPTION" property="jobDescription" jdbcType="VARCHAR" />
+        <id column="MAKE_TIME" property="createTime" jdbcType="VARCHAR" />
+        <id column="JOB_NAME" property="jobName" jdbcType="VARCHAR" />
+
+    </resultMap>
+    <!--<parameterMap id="taskInfo" type="com.sinotrans.ebiz.job.entity.TaskInfo">-->
+        <!--<parameter property="jobName" jdbcType="VARCHAR" javaType="String"/>-->
+        <!--<parameter property="jobGroup" jdbcType="VARCHAR" javaType="String"/>-->
+        <!--<parameter property="jobStatus" jdbcType="VARCHAR" javaType="String"/>-->
+        <!--<parameter property="jobDescription" jdbcType="VARCHAR" javaType="String"/>-->
+        <!--<parameter property="cronExpression" jdbcType="VARCHAR" javaType="String"/>-->
+        <!--<parameter property="createTime" jdbcType="VARCHAR" javaType="String"/>-->
+        <!--<parameter property="jobDataMap" jdbcType="VARCHAR" javaType="String"/>-->
+    <!--</parameterMap>-->
+    <select id="getJobInfo"  resultMap="BaseResultMap" parameterType="com.jr.gitdemo.entity.TaskInfo" >
+        SELECT qrtz_triggers.JOB_NAME JOB_NAME,
+				qrtz_triggers.JOB_GROUP JOB_GROUP,
+				qrtz_cron_triggers.CRON_EXPRESSION CRON_EXPRESSION,
+                qrtz_triggers.DESCRIPTION MAKE_TIME,
+                qrtz_job_details.DESCRIPTION DESCRIPTION
+			FROM
+				qrtz_triggers,qrtz_cron_triggers,qrtz_job_details
+			where  qrtz_triggers.JOB_NAME = qrtz_cron_triggers.TRIGGER_NAME
+            and qrtz_triggers.SCHED_NAME = qrtz_cron_triggers.SCHED_NAME
+            and qrtz_triggers.SCHED_NAME = qrtz_job_details.SCHED_NAME
+            and qrtz_triggers.JOB_NAME = qrtz_job_details.JOB_NAME
+            and qrtz_triggers.SCHED_NAME = 'QuartzScheduler'
+            and qrtz_triggers.JOB_NAME like concat('%',#{jobName},'%')
+    </select>
+</mapper>

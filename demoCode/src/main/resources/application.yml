@@ -1,0 +1,23 @@
+
+server:
+  port: 8088
+
+spring:
+  datasource:
+    url: jdbc:mysql://127.0.0.1:3305/test?serverTimezone=UTC&useSSL=false&autoReconnect=true
+    username: root
+    password: 666666
+    driver-class-name: com.mysql.jdbc.Driver
+
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+#  type-aliases-package: com.jr.gitdemo.dao
+
+
+logging:
+  level:
+    ROOT: INFO
+    com:
+      xncoding: DEBUG
+    org.springframework.web.servlet: ERROR
+#  file: E:/logs/app.log
